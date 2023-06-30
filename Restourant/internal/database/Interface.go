@@ -1,0 +1,30 @@
+package database
+
+import (
+	"context"
+	"github.com/google/uuid"
+)
+
+type Rep interface {
+	CreateMenu(ctx context.Context, m *Menu) error
+	GetMenu(ctx context.Context, id uuid.UUID) (*Menu, error)
+	UpdateMenu(ctx context.Context, m *Menu) error
+	DeleteMenu(ctx context.Context, id uuid.UUID) error
+
+	CreateProduct(ctx context.Context, p *Product) error
+	GetProduct(ctx context.Context, id uuid.UUID) (*Product, error)
+	GetProductList(ctx context.Context) ([]*Product, error)
+	UpdateProduct(ctx context.Context, p *Product) error
+	DeleteProduct(ctx context.Context, id uuid.UUID) error
+
+	//CreateProductType(ctx context.Context, pt *ProductType) error
+	//GetProductType(ctx context.Context, id int64) (*ProductType, error)
+	//GetProductTypeList(ctx context.Context) ([]*ProductType, error)
+	/*UpdateProductType(ctx context.Context, pt *ProductType) error
+	DeleteProductType(ctx context.Context, id int64) error
+
+	CreateOrder(ctx context.Context, o *Order) error
+	GetOrder(ctx context.Context, id int64) (*Order, error)
+	UpdateOrder(ctx context.Context, o *Order) error
+	DeleteOrder(ctx context.Context, id int64) error*/
+}
