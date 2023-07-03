@@ -24,6 +24,7 @@ func Run(cfg configdb.ConfigDb, config configserv.ConfigServ) error {
 	serv := service.New(database.New(db))
 	s := grpc.NewServer()
 	restaurant.RegisterProductServiceServer(s, serv)
+	restaurant.RegisterMenuServiceServer(s, serv)
 
 	l, err := net.Listen("tcp", config.GRPCAddr)
 	if err != nil {

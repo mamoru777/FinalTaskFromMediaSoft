@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/golang/protobuf/ptypes"
 	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/restaurant"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
+	"time"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 		log.Fatal("error connect to grpc server err:", err)
 	}
 	product := restaurant.NewProductServiceClient(conn)
+	menu := restaurant.NewMenuServiceClient(conn)
 	//client := userapi.NewUserServiceClient(conn)
 Loop:
 	for {
@@ -111,28 +113,207 @@ Loop:
 			}
 			fmt.Println("\n")
 		case "3":
-			//var inputSucess bool = false
-			var onDateString string
-			var onDate timestamp.Timestamp
-			fmt.Println("Введите на какую дату вы создаете меню ")
-			_, err := fmt.Scanln(&onDateString)
-			if err != nil {
-				fmt.Println("Введите дату создания меню в нужном формате: ")
-			} else {
-				fmt.Println(onDate)
-			}
-			//onDate, err = time.Parse("2006-01-02", onDateString)
-			/*for !inputSucess {
-				fmt.Println("Введите на какую дату вы создаете меню ")
-				_, err := fmt.Scanln(&onDate)
-				if err != nil {
-					fmt.Println("Введите дату создания меню в нужном формате: ")
-				} else {
-					inputSucess = true
-				}
+			currentTime := time.Now()
+			year, month, day := currentTime.Date()
 
-			}*/
+			nextDay := currentTime.AddDate(0, 0, 1)
+			nextDayProto, error := ptypes.TimestampProto(nextDay)
+			if error != nil {
+				log.Fatal(error)
+			}
+			var productname string
+			var salats []string
+			var garnishes []string
+			var meats []string
+			var soups []string
+			var drinks []string
+			var desserts []string
+			var Exit bool = false
+			var hoursOp int
+			var minutesOp int
+			var hoursCl int
+			var minutesCl int
+			fmt.Println("Введите название салата и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного салата\n", "Напишите 'выход' без ковычек, если добавили нужные салаты\n")
+
+			for Exit != true {
+				fmt.Println(" Введите название салата")
+				fmt.Scanln(&productname)
+				switch productname {
+				case "выход":
+					Exit = true
+				default:
+					salats = append(salats, productname)
+				}
+			}
+			Exit = false
+
+			fmt.Println("Введите название гарнира и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного гарнира\n", "Напишите 'выход' без ковычек, если добавили нужные гарниры\n")
+			for Exit != true {
+				fmt.Println(" Введите название гарнира")
+				fmt.Scanln(&productname)
+				switch productname {
+				case "выход":
+					Exit = true
+				default:
+					garnishes = append(garnishes, productname)
+				}
+			}
+			Exit = false
+
+			fmt.Println("Введите название мяса и нажмите кнопку 'Enter' (оно должны быть в списке продуктов), которое вы хотите добавить в меню, после можете вписать название еще одного мяса\n", "Напишите 'выход' без ковычек, если добавили нужное мясо\n")
+			for Exit != true {
+				fmt.Println(" Введите название мяса")
+				fmt.Scanln(&productname)
+				switch productname {
+				case "выход":
+					Exit = true
+				default:
+					meats = append(meats, productname)
+				}
+			}
+			Exit = false
+
+			fmt.Println("Введите название супа и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного супа\n", "Напишите 'выход' без ковычек, если добавили нужные супы\n")
+			for Exit != true {
+				fmt.Println(" Введите название супа")
+				fmt.Scanln(&productname)
+				switch productname {
+				case "выход":
+					Exit = true
+				default:
+					soups = append(soups, productname)
+				}
+			}
+			Exit = false
+
+			fmt.Println("Введите название напитка и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного напитка\n", "Напишите 'выход' без ковычек, если добавили нужные напитки\n")
+			for Exit != true {
+				fmt.Println(" Введите название напитка")
+				fmt.Scanln(&productname)
+				switch productname {
+				case "выход":
+					Exit = true
+				default:
+					drinks = append(drinks, productname)
+				}
+			}
+			Exit = false
+
+			fmt.Println("Введите название дессерта и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного дессерта\n", "Напишите 'выход' без ковычек, если добавили нужные дессерты\n")
+			for Exit != true {
+				fmt.Println(" Введите название дессерта")
+				fmt.Scanln(&productname)
+				switch productname {
+				case "выход":
+					Exit = true
+				default:
+					desserts = append(desserts, productname)
+				}
+			}
+			Exit = false
+
+			for {
+				fmt.Println("Введите часы открытия приема заказов")
+				_, err := fmt.Scanln(&hoursOp)
+				if err != nil {
+					fmt.Println("Введите часы в числовом формате")
+				} else {
+					break
+				}
+			}
+
+			for {
+				fmt.Println("Введите минуты открытия приема заказов")
+				_, err := fmt.Scanln(&minutesOp)
+				if err != nil {
+					fmt.Println("Введите минуты в числовом формате")
+				} else {
+					break
+				}
+			}
+
+			for {
+				fmt.Println("Введите часы закрытия приема заказов")
+				_, err := fmt.Scanln(&hoursCl)
+				if err != nil {
+					fmt.Println("Введите часы в числовом формате")
+				} else {
+					break
+				}
+			}
+
+			for {
+				fmt.Println("Введите минуты закрытия приема заказов")
+				_, err := fmt.Scanln(&minutesCl)
+				if err != nil {
+					fmt.Println("Введите минуты в числовом формате")
+				} else {
+					break
+				}
+			}
+
+			dateOpen := time.Date(year, month, day, hoursOp, minutesOp, 0, 0, currentTime.Location())
+			dateOpenProto, error := ptypes.TimestampProto(dateOpen)
+			if error != nil {
+				log.Fatal(error)
+			}
+
+			dateClose := time.Date(year, month, day, hoursCl, minutesCl, 0, 0, currentTime.Location())
+			dateCloseProto, error := ptypes.TimestampProto(dateClose)
+			if error != nil {
+				log.Fatal(error)
+			}
+			err := CreateMenu(menu, restaurant.CreateMenuRequest{
+				OnDate:          nextDayProto,
+				OpeningRecordAt: dateOpenProto,
+				ClosingRecordAt: dateCloseProto,
+				Salads:          salats,
+				Garnishes:       garnishes,
+				Meats:           meats,
+				Soups:           soups,
+				Drinks:          drinks,
+				Desserts:        desserts,
+			})
+			if err != nil {
+				log.Fatal(err)
+			} else {
+				fmt.Println("Меню создано успешно")
+			}
 		case "4":
+			currentTime := time.Now()
+			nextDay := currentTime.AddDate(0, 0, 1)
+			nextDayYMD := nextDay.Format("2006-01-02")
+			fmt.Println("Меню на ", nextDayYMD, ":\n")
+			model, err := GetMenu(menu, restaurant.GetMenuRequest{})
+			if err != nil {
+				log.Fatal("Faild to load Menu", err)
+			}
+			fmt.Println("Id меню:", model.Uuid, "\n")
+			fmt.Println("время открытия записи:", model.OpeningRecordAt.AsTime().Format("15:01"), "\n", "время закрытия записи:", model.ClosingRecordAt.AsTime().Format("15:01"), "\n")
+			fmt.Println("Салаты:\n")
+			for _, s := range model.Salads {
+				fmt.Println(s.Name, "", s.Description, "", s.Weight, "", s.Price, "\n")
+			}
+			fmt.Println("Гарниры:\n")
+			for _, g := range model.Garnishes {
+				fmt.Println(g.Name, "", g.Description, "", g.Weight, "", g.Price, "\n")
+			}
+			fmt.Println("Мясо:\n")
+			for _, m := range model.Meats {
+				fmt.Println(m.Name, "", m.Description, "", m.Weight, "", m.Price, "\n")
+			}
+			fmt.Println("Супы:\n")
+			for _, sp := range model.Soups {
+				fmt.Println(sp.Name, "", sp.Description, "", sp.Weight, "", sp.Price, "\n")
+			}
+			fmt.Println("Напитки:\n")
+			for _, dr := range model.Drinks {
+				fmt.Println(dr.Name, "", dr.Description, "", dr.Weight, "", dr.Price, "\n")
+			}
+			fmt.Println("Дессерты:\n")
+			for _, ds := range model.Desserts {
+				fmt.Println(ds.Name, "", ds.Description, "", ds.Weight, "", ds.Price, "\n")
+			}
 		case "5":
 		case "6":
 			conn.Close()
@@ -163,4 +344,18 @@ func GetProductList(product restaurant.ProductServiceClient, req restaurant.GetP
 		names = append(names, p.Name)
 	}
 	return names, nil
+}
+
+func CreateMenu(menu restaurant.MenuServiceClient, model restaurant.CreateMenuRequest) error {
+	if _, err := menu.CreateMenu(context.Background(), &model); err != nil {
+		return err
+	}
+	log.Println("Menu created: ", model)
+	return nil
+}
+
+func GetMenu(menu restaurant.MenuServiceClient, req restaurant.GetMenuRequest) (*restaurant.Menu, error) {
+	res, _ := menu.GetMenu(context.Background(), &req)
+	menuRes := res.Menu
+	return menuRes, nil
 }

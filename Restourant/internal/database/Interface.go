@@ -3,16 +3,17 @@ package database
 import (
 	"context"
 	"github.com/google/uuid"
+	"time"
 )
 
 type Rep interface {
 	CreateMenu(ctx context.Context, m *Menu) error
-	GetMenu(ctx context.Context, id uuid.UUID) (*Menu, error)
+	GetMenu(ctx context.Context, onDate time.Time) (*Menu, error)
 	UpdateMenu(ctx context.Context, m *Menu) error
 	DeleteMenu(ctx context.Context, id uuid.UUID) error
 
 	CreateProduct(ctx context.Context, p *Product) error
-	GetProduct(ctx context.Context, id uuid.UUID) (*Product, error)
+	GetProduct(ctx context.Context, name string) Product
 	GetProductList(ctx context.Context) ([]*Product, error)
 	UpdateProduct(ctx context.Context, p *Product) error
 	DeleteProduct(ctx context.Context, id uuid.UUID) error
