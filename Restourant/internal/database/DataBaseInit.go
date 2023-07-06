@@ -3,6 +3,7 @@ package database
 import (
 	"FinalTaskFromMediaSoft/Restourant/internal/configdb"
 	"fmt"
+	_ "github.com/jackc/pgx/stdlib"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"

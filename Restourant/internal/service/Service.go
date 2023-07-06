@@ -11,10 +11,8 @@ import (
 )
 
 type Service struct {
-	//retailpb.UnimplementedProductServiceServer
 	restaurant.UnimplementedProductServiceServer
 	restaurant.UnimplementedMenuServiceServer
-	//retailpb.Un
 	rep database.Rep
 }
 

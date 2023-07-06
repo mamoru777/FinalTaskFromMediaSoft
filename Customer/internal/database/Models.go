@@ -1,4 +1,4 @@
-package model
+package database
 
 import (
 	"github.com/google/uuid"
@@ -7,11 +7,13 @@ import (
 
 type Customer struct {
 	//Id       uint   `db:"id" gorm:"id;primaryKey;type:serial;unique_index;auto_increment;sequence:customer_id_seq"`
-	Id       uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
-	Name     string    `db:"name" gorm:"name"`
-	OfficeId uint
-	Office   Office `db:"office_id" gorm:"foreignKey:office_id"`
-	Orders   []Order
+	Id         uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	Name       string    `db:"name" gorm:"name"`
+	CreatedAt  time.Time
+	OfficeId   uuid.UUID
+	OfficeName string
+	Office     Office `db:"office_id" gorm:"foreignKey:office_id"`
+	Orders     []Order
 }
 
 type Office struct {

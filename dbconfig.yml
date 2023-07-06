@@ -1,5 +1,5 @@
 local:
   dialect: postgres
   datasource: dbname=Customer user=postgres password=159753 sslmode=disable port=5432
-  dir: internal/database/migrations
+  dir: Customer/internal/database/migrations
   table: migrations
