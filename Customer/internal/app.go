@@ -17,6 +17,7 @@ import (
 )
 
 func Run(cfg configdb.ConfigDb, config configserv.ConfigServ) error {
+
 	db, err := database.InitDb(cfg)
 	if err != nil {
 		log.Fatal("Cannot to init the database", err)
@@ -25,6 +26,7 @@ func Run(cfg configdb.ConfigDb, config configserv.ConfigServ) error {
 	s := grpc.NewServer()
 	customer.RegisterOfficeServiceServer(s, serv)
 	customer.RegisterUserServiceServer(s, serv)
+	customer.RegisterOrderServiceServer(s, serv)
 	l, err := net.Listen("tcp", config.GRPCAddr)
 	if err != nil {
 		return fmt.Errorf("failed to listen tcp %s, %v", config.GRPCAddr, err)

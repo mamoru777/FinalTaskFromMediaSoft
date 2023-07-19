@@ -4,8 +4,12 @@ import (
 	"FinalTaskFromMediaSoft/Restourant/internal/database"
 	"fmt"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/google/uuid"
+	customer2 "gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/customer"
 	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/restaurant"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"time"
 )
@@ -13,6 +17,7 @@ import (
 type Service struct {
 	restaurant.UnimplementedProductServiceServer
 	restaurant.UnimplementedMenuServiceServer
+	restaurant.UnimplementedOrderServiceServer
 	rep database.Rep
 }
 
@@ -23,17 +28,22 @@ func New(rep database.Rep) *Service {
 }
 
 func (s *Service) CreateMenu(ctx context.Context, request *restaurant.CreateMenuRequest) (*restaurant.CreateMenuResponse, error) {
+	loc, err := time.LoadLocation("UTC")
+	if err != nil {
+		log.Println("Не удалось задать нужный часовой пояс")
+	}
+	time.Local = loc
 	//var timenow timestamp.Timestamp
 	/*timenow, error := ptypes.TimestampProto(time.Now())
 	if error != nil {
 		log.Fatal(error)
 	}*/
-	var currentTime time.Time = time.Now()
-	nextDay := currentTime.AddDate(0, 0, 1)
-	modeldb, _ := s.rep.GetMenu(ctx, nextDay)
-	if modeldb != nil {
-		return &restaurant.CreateMenuResponse{}, nil
-	}
+	//var currentTime time.Time = time.Now()
+	//nextDay := currentTime.AddDate(0, 0, 1)
+	//modeldb, _ := s.rep.GetMenu(ctx, nextDay)
+	//if modeldb != nil {
+	//	return &restaurant.CreateMenuResponse{}, nil
+	//}
 	var productsproto []string
 	productsproto = append(productsproto, request.Desserts...)
 	productsproto = append(productsproto, request.Drinks...)
@@ -61,13 +71,18 @@ func (s *Service) CreateMenu(ctx context.Context, request *restaurant.CreateMenu
 }
 
 func (s *Service) GetMenu(ctx context.Context, request *restaurant.GetMenuRequest) (*restaurant.GetMenuResponse, error) {
-	var currentTime time.Time = time.Now()
-	nextDay := currentTime.AddDate(0, 0, 1)
-	nextDayProto, error := ptypes.TimestampProto(nextDay)
-	if error != nil {
-		log.Fatal(error)
+	loc, err := time.LoadLocation("UTC")
+	if err != nil {
+		log.Println("Не удалось задать нужный часовой пояс")
 	}
-	model, err := s.rep.GetMenu(ctx, nextDay)
+	time.Local = loc
+	//var currentTime time.Time = time.Now()
+	//nextDay := currentTime.AddDate(0, 0, 1)
+	//nextDayProto, error := ptypes.TimestampProto(nextDay)
+	//if error != nil {
+	//	log.Fatal(error)
+	//}
+	model, err := s.rep.GetMenu(ctx, request.OnDate.AsTime())
 	if err != nil {
 		log.Fatal("Запись не найдена", err)
 	}
@@ -198,7 +213,7 @@ func (s *Service) GetMenu(ctx context.Context, request *restaurant.GetMenuReques
 	}
 	menu := &restaurant.Menu{
 		Uuid:            model.Id.String(),
-		OnDate:          nextDayProto,
+		OnDate:          request.OnDate, //nextDayProto,
 		OpeningRecordAt: OpRecAtProto,
 		ClosingRecordAt: ClRecAtProto,
 		CreatedAt:       CreatedAtProto,
@@ -246,6 +261,58 @@ func (s *Service) GetProductList(ctx context.Context, request *restaurant.GetPro
 	}
 	return &restaurant.GetProductListResponse{Result: result}, nil
 
+}
+
+func (s *Service) GetUpToDateOrderList(ctx context.Context, request *restaurant.GetUpToDateOrderListRequest) (*restaurant.GetUpToDateOrderListResponse, error) {
+	orderList, err := s.rep.GetOrderList(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var orderListProto []*restaurant.Order
+	for _, o := range orderList {
+		orderListProto = append(orderListProto, &restaurant.Order{
+			ProductId:   o.ProductId.String(),
+			ProductName: o.ProductName,
+			Count:       o.Count,
+		})
+	}
+
+	conn, err := grpc.Dial("localhost:13998", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatal("error connect to grpc server err:", err)
+	}
+	customer := customer2.NewUserServiceClient(conn)
+	office := customer2.NewOfficeServiceClient(conn)
+	var orderByOfficeListProto []*restaurant.OrdersByOffice
+
+	res, _ := office.GetOfficeList(context.Background(), &customer2.GetOfficeListRequest{})
+	for _, of := range res.Result {
+		rescus, _ := customer.GetUserList(context.Background(), &customer2.GetUserListRequest{OfficeUuid: of.Uuid})
+		orders := []*database.Order{}
+		var ordersProto []*restaurant.Order
+		for _, c := range rescus.Result {
+			UuidProto, err := uuid.Parse(c.Uuid)
+			if err != nil {
+				log.Fatal("Не удалось преобразовать строку", err)
+			}
+			orders, _ = s.rep.GetOrdersByCustomer(context.Background(), UuidProto)
+			for _, o := range orders {
+				ordersProto = append(ordersProto, &restaurant.Order{
+					ProductId:   o.ProductId.String(),
+					ProductName: o.ProductName,
+					Count:       o.Count,
+				})
+			}
+		}
+		orderByOfficeListProto = append(orderByOfficeListProto, &restaurant.OrdersByOffice{
+			OfficeUuid:    of.Uuid,
+			OfficeName:    of.Name,
+			OfficeAddress: of.Address,
+			Result:        ordersProto,
+		})
+	}
+	conn.Close()
+	return &restaurant.GetUpToDateOrderListResponse{TotalOrders: orderListProto, TotalOrdersByCompany: orderByOfficeListProto}, nil
 }
 
 func getProductTypeFromString(value string) restaurant.ProductType {

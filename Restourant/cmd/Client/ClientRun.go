@@ -12,18 +12,24 @@ import (
 )
 
 func main() {
+	loc, err := time.LoadLocation("UTC")
+	if err != nil {
+		log.Println("Не удалось задать нужный часовой пояс")
+	}
+	time.Local = loc
 	conn, err := grpc.Dial("localhost:13999", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("error connect to grpc server err:", err)
 	}
 	product := restaurant.NewProductServiceClient(conn)
 	menu := restaurant.NewMenuServiceClient(conn)
+	order := restaurant.NewOrderServiceClient(conn)
 	//client := userapi.NewUserServiceClient(conn)
 Loop:
 	for {
-		fmt.Println("Приветствую, это программа ресторана, вам выведен список доступных команд, введите цифру без пробелов и других символов для команды, которую хотите выполнить:\n", "1: Создать продукт\n", "2: Посмотреть список продуктов\n", "3: Создать меню\n", "4: Посмотреть меню\n", "5: Посмотреть список заказов\n", "6: Выход")
+		fmt.Print("Приветствую, это программа ресторана, вам выведен список доступных команд, введите цифру без пробелов и других символов для команды, которую хотите выполнить:\n", "1: Создать продукт\n", "2: Посмотреть список продуктов\n", "3: Создать меню\n", "4: Посмотреть меню\n", "5: Посмотреть список заказов\n", "6: Выход\n")
 		var usrcase string
-		fmt.Scanln(&usrcase)
+		fmt.Scan(&usrcase)
 		switch usrcase {
 		case "1":
 			var name string
@@ -33,26 +39,26 @@ Loop:
 			var weight int32
 			var price float64
 			for {
-				fmt.Println("Введите название продукта")
-				_, err := fmt.Scanln(&name)
+				fmt.Print("Введите название продукта\n")
+				_, err := fmt.Scan(&name)
 				if err != nil {
-					fmt.Println("Введите название продукта в текстовом формате")
+					fmt.Print("Введите название продукта в текстовом формате\n")
 				} else {
 					break
 				}
 			}
 			for {
-				fmt.Println("Введите описание продукта")
-				_, err := fmt.Scanln(&description)
+				fmt.Print("Введите описание продукта\n")
+				_, err := fmt.Scan(&description)
 				if err != nil {
-					fmt.Println("Введите описание продукта в текстовом формате")
+					fmt.Print("Введите описание продукта в текстовом формате\n")
 				} else {
 					break
 				}
 			}
 
-			fmt.Println("Есть следующий список типов продуктов, выберите один из них, введя нужную цифру:\n", "(Если введете неправильно, то тип автоматически станет UNSPECIFIED)\n", "0: Unspecified\n", "1: Salad\n", "2: Garnish\n", "3: Meat\n", "4: Soup\n", "5: Drink\n", "6: Dessert")
-			fmt.Scanln(&producttypecase)
+			fmt.Print("Есть следующий список типов продуктов, выберите один из них, введя нужную цифру:\n", "(Если введете неправильно, то тип автоматически станет UNSPECIFIED)\n", "0: Unspecified\n", "1: Salad\n", "2: Garnish\n", "3: Meat\n", "4: Soup\n", "5: Drink\n", "6: Dessert\n")
+			fmt.Scan(&producttypecase)
 			switch producttypecase {
 			case "0":
 				producttype = 0
@@ -72,19 +78,19 @@ Loop:
 				producttype = 0
 			}
 			for {
-				fmt.Println("Введите вес продукта")
-				_, err := fmt.Scanln(&weight)
+				fmt.Print("Введите вес продукта\n")
+				_, err := fmt.Scan(&weight)
 				if err != nil {
-					fmt.Println("Введите вес продукта в целочисленном числовом формате")
+					fmt.Print("Введите вес продукта в целочисленном числовом формате\n")
 				} else {
 					break
 				}
 			}
 			for {
-				fmt.Println("Введите цену продукта")
-				_, err := fmt.Scanln(&price)
+				fmt.Print("Введите цену продукта\n")
+				_, err := fmt.Scan(&price)
 				if err != nil {
-					fmt.Println("Введите цену продукта в числовом формате")
+					fmt.Print("Введите цену продукта в числовом формате\n")
 				} else {
 					break
 				}
@@ -100,10 +106,10 @@ Loop:
 			if err != nil {
 				log.Fatal(err)
 			} else {
-				fmt.Println("Продукт создан успешно")
+				fmt.Print("Продукт создан успешно\n")
 			}
 		case "2":
-			fmt.Println("Список существующих продуктов:\n")
+			fmt.Print("Список существующих продуктов:\n")
 			names, err := GetProductList(product, restaurant.GetProductListRequest{})
 			if err != nil {
 				log.Fatal("Failed to get product list: %v", err)
@@ -111,12 +117,11 @@ Loop:
 			for _, n := range names {
 				fmt.Println(n)
 			}
-			fmt.Println("\n")
 		case "3":
 			currentTime := time.Now()
 			year, month, day := currentTime.Date()
 
-			nextDay := currentTime.AddDate(0, 0, 1)
+			nextDay := time.Now().AddDate(0, 0, 1)
 			nextDayProto, error := ptypes.TimestampProto(nextDay)
 			if error != nil {
 				log.Fatal(error)
@@ -133,11 +138,11 @@ Loop:
 			var minutesOp int
 			var hoursCl int
 			var minutesCl int
-			fmt.Println("Введите название салата и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного салата\n", "Напишите 'выход' без ковычек, если добавили нужные салаты\n")
+			fmt.Print("Введите название салата и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного салата\n", "Напишите 'выход' без ковычек, если добавили нужные салаты\n")
 
 			for Exit != true {
-				fmt.Println(" Введите название салата")
-				fmt.Scanln(&productname)
+				fmt.Print(" Введите название салата\n")
+				fmt.Scan(&productname)
 				switch productname {
 				case "выход":
 					Exit = true
@@ -147,10 +152,10 @@ Loop:
 			}
 			Exit = false
 
-			fmt.Println("Введите название гарнира и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного гарнира\n", "Напишите 'выход' без ковычек, если добавили нужные гарниры\n")
+			fmt.Print("Введите название гарнира и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного гарнира\n", "Напишите 'выход' без ковычек, если добавили нужные гарниры\n")
 			for Exit != true {
-				fmt.Println(" Введите название гарнира")
-				fmt.Scanln(&productname)
+				fmt.Print(" Введите название гарнира\n")
+				fmt.Scan(&productname)
 				switch productname {
 				case "выход":
 					Exit = true
@@ -160,10 +165,10 @@ Loop:
 			}
 			Exit = false
 
-			fmt.Println("Введите название мяса и нажмите кнопку 'Enter' (оно должны быть в списке продуктов), которое вы хотите добавить в меню, после можете вписать название еще одного мяса\n", "Напишите 'выход' без ковычек, если добавили нужное мясо\n")
+			fmt.Print("Введите название мяса и нажмите кнопку 'Enter' (оно должны быть в списке продуктов), которое вы хотите добавить в меню, после можете вписать название еще одного мяса\n", "Напишите 'выход' без ковычек, если добавили нужное мясо\n")
 			for Exit != true {
-				fmt.Println(" Введите название мяса")
-				fmt.Scanln(&productname)
+				fmt.Print(" Введите название мяса\n")
+				fmt.Scan(&productname)
 				switch productname {
 				case "выход":
 					Exit = true
@@ -173,10 +178,10 @@ Loop:
 			}
 			Exit = false
 
-			fmt.Println("Введите название супа и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного супа\n", "Напишите 'выход' без ковычек, если добавили нужные супы\n")
+			fmt.Print("Введите название супа и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного супа\n", "Напишите 'выход' без ковычек, если добавили нужные супы\n")
 			for Exit != true {
-				fmt.Println(" Введите название супа")
-				fmt.Scanln(&productname)
+				fmt.Print(" Введите название супа\n")
+				fmt.Scan(&productname)
 				switch productname {
 				case "выход":
 					Exit = true
@@ -186,10 +191,10 @@ Loop:
 			}
 			Exit = false
 
-			fmt.Println("Введите название напитка и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного напитка\n", "Напишите 'выход' без ковычек, если добавили нужные напитки\n")
+			fmt.Print("Введите название напитка и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного напитка\n", "Напишите 'выход' без ковычек, если добавили нужные напитки\n")
 			for Exit != true {
-				fmt.Println(" Введите название напитка")
-				fmt.Scanln(&productname)
+				fmt.Print(" Введите название напитка\n")
+				fmt.Scan(&productname)
 				switch productname {
 				case "выход":
 					Exit = true
@@ -199,10 +204,10 @@ Loop:
 			}
 			Exit = false
 
-			fmt.Println("Введите название дессерта и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного дессерта\n", "Напишите 'выход' без ковычек, если добавили нужные дессерты\n")
+			fmt.Print("Введите название дессерта и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного дессерта\n", "Напишите 'выход' без ковычек, если добавили нужные дессерты\n")
 			for Exit != true {
-				fmt.Println(" Введите название дессерта")
-				fmt.Scanln(&productname)
+				fmt.Print(" Введите название дессерта\n")
+				fmt.Scan(&productname)
 				switch productname {
 				case "выход":
 					Exit = true
@@ -213,52 +218,52 @@ Loop:
 			Exit = false
 
 			for {
-				fmt.Println("Введите часы открытия приема заказов")
-				_, err := fmt.Scanln(&hoursOp)
+				fmt.Print("Введите часы открытия приема заказов\n")
+				_, err := fmt.Scan(&hoursOp)
 				if err != nil {
-					fmt.Println("Введите часы в числовом формате")
+					fmt.Print("Введите часы в числовом формате\n")
 				} else {
 					break
 				}
 			}
 
 			for {
-				fmt.Println("Введите минуты открытия приема заказов")
-				_, err := fmt.Scanln(&minutesOp)
+				fmt.Print("Введите минуты открытия приема заказов\n")
+				_, err := fmt.Scan(&minutesOp)
 				if err != nil {
-					fmt.Println("Введите минуты в числовом формате")
+					fmt.Print("Введите минуты в числовом формате\n")
 				} else {
 					break
 				}
 			}
 
 			for {
-				fmt.Println("Введите часы закрытия приема заказов")
-				_, err := fmt.Scanln(&hoursCl)
+				fmt.Print("Введите часы закрытия приема заказов\n")
+				_, err := fmt.Scan(&hoursCl)
 				if err != nil {
-					fmt.Println("Введите часы в числовом формате")
+					fmt.Print("Введите часы в числовом формате\n")
 				} else {
 					break
 				}
 			}
 
 			for {
-				fmt.Println("Введите минуты закрытия приема заказов")
-				_, err := fmt.Scanln(&minutesCl)
+				fmt.Print("Введите минуты закрытия приема заказов\n")
+				_, err := fmt.Scan(&minutesCl)
 				if err != nil {
-					fmt.Println("Введите минуты в числовом формате")
+					fmt.Print("Введите минуты в числовом формате\n")
 				} else {
 					break
 				}
 			}
 
-			dateOpen := time.Date(year, month, day, hoursOp, minutesOp, 0, 0, currentTime.Location())
+			dateOpen := time.Date(year, month, day, hoursOp, minutesOp, 0, 0, loc)
 			dateOpenProto, error := ptypes.TimestampProto(dateOpen)
 			if error != nil {
 				log.Fatal(error)
 			}
 
-			dateClose := time.Date(year, month, day, hoursCl, minutesCl, 0, 0, currentTime.Location())
+			dateClose := time.Date(year, month, day, hoursCl, minutesCl, 0, 0, loc)
 			dateCloseProto, error := ptypes.TimestampProto(dateClose)
 			if error != nil {
 				log.Fatal(error)
@@ -282,44 +287,60 @@ Loop:
 		case "4":
 			currentTime := time.Now()
 			nextDay := currentTime.AddDate(0, 0, 1)
+			nextDayProto, error := ptypes.TimestampProto(nextDay)
+			if error != nil {
+				log.Fatal(error)
+			}
 			nextDayYMD := nextDay.Format("2006-01-02")
-			fmt.Println("Меню на ", nextDayYMD, ":\n")
-			model, err := GetMenu(menu, restaurant.GetMenuRequest{})
+			fmt.Print("Меню на ", nextDayYMD, ":\n")
+			model, err := GetMenu(menu, restaurant.GetMenuRequest{OnDate: nextDayProto})
 			if err != nil {
 				log.Fatal("Faild to load Menu", err)
 			}
-			fmt.Println("Id меню:", model.Uuid, "\n")
-			fmt.Println("время открытия записи:", model.OpeningRecordAt.AsTime().Format("15:01"), "\n", "время закрытия записи:", model.ClosingRecordAt.AsTime().Format("15:01"), "\n")
-			fmt.Println("Салаты:\n")
+			fmt.Print("Id меню:", model.Uuid, "\n")
+			fmt.Print("время открытия записи:", model.OpeningRecordAt.AsTime().Format("15:01"), "\n", "время закрытия записи:", model.ClosingRecordAt.AsTime().Format("15:01"), "\n")
+			fmt.Print("Салаты:\n")
 			for _, s := range model.Salads {
-				fmt.Println(s.Name, "", s.Description, "", s.Weight, "", s.Price, "\n")
+				fmt.Print(s.Name, "", s.Description, "", s.Weight, "", s.Price, "\n")
 			}
-			fmt.Println("Гарниры:\n")
+			fmt.Print("Гарниры:\n")
 			for _, g := range model.Garnishes {
-				fmt.Println(g.Name, "", g.Description, "", g.Weight, "", g.Price, "\n")
+				fmt.Print(g.Name, "", g.Description, "", g.Weight, "", g.Price, "\n")
 			}
-			fmt.Println("Мясо:\n")
+			fmt.Print("Мясо:\n")
 			for _, m := range model.Meats {
-				fmt.Println(m.Name, "", m.Description, "", m.Weight, "", m.Price, "\n")
+				fmt.Print(m.Name, "", m.Description, "", m.Weight, "", m.Price, "\n")
 			}
-			fmt.Println("Супы:\n")
+			fmt.Print("Супы:\n")
 			for _, sp := range model.Soups {
-				fmt.Println(sp.Name, "", sp.Description, "", sp.Weight, "", sp.Price, "\n")
+				fmt.Print(sp.Name, "", sp.Description, "", sp.Weight, "", sp.Price, "\n")
 			}
-			fmt.Println("Напитки:\n")
+			fmt.Print("Напитки:\n")
 			for _, dr := range model.Drinks {
-				fmt.Println(dr.Name, "", dr.Description, "", dr.Weight, "", dr.Price, "\n")
+				fmt.Print(dr.Name, "", dr.Description, "", dr.Weight, "", dr.Price, "\n")
 			}
-			fmt.Println("Дессерты:\n")
+			fmt.Print("Дессерты:\n")
 			for _, ds := range model.Desserts {
-				fmt.Println(ds.Name, "", ds.Description, "", ds.Weight, "", ds.Price, "\n")
+				fmt.Print(ds.Name, "", ds.Description, "", ds.Weight, "", ds.Price, "\n")
 			}
 		case "5":
+			fmt.Print("Список всех существующих заказов:\n")
+			orders, ordersByOffice, err := GetOrderList(order, restaurant.GetUpToDateOrderListRequest{})
+			if err != nil {
+				log.Fatal("Не удалось загрузить заказы ", err)
+			}
+			for _, o := range orders {
+				fmt.Print(o, "\n")
+			}
+			fmt.Print("Список всех заказов по офисам:\n")
+			for _, obf := range ordersByOffice {
+				fmt.Print(obf, "\n")
+			}
 		case "6":
 			conn.Close()
 			break Loop
 		default:
-			fmt.Println("Вы неправильно ввели цифру, пожалуйста выберите нужный вам пункт и введите цифру без пробелов и других знаков")
+			fmt.Print("Вы неправильно ввели цифру, пожалуйста выберите нужный вам пункт и введите цифру без пробелов и других знаков\n")
 		}
 
 	}
@@ -358,4 +379,14 @@ func GetMenu(menu restaurant.MenuServiceClient, req restaurant.GetMenuRequest) (
 	res, _ := menu.GetMenu(context.Background(), &req)
 	menuRes := res.Menu
 	return menuRes, nil
+}
+
+func GetOrderList(order restaurant.OrderServiceClient, req restaurant.GetUpToDateOrderListRequest) ([]*restaurant.Order, []*restaurant.OrdersByOffice, error) {
+	res, err := order.GetUpToDateOrderList(context.Background(), &req)
+	if err != nil {
+		return nil, nil, err
+	}
+	orders := res.TotalOrders
+	ordersByOffice := res.TotalOrdersByCompany
+	return orders, ordersByOffice, nil
 }

@@ -47,13 +47,19 @@ func (s *Storage) CreateProduct(ctx context.Context, p *Product) error {
 
 func (s *Storage) GetProduct(ctx context.Context, name string) Product {
 	p := *new(Product)
-	s.db.WithContext(ctx).Where("name = ?", name).First(&p)
+	s.db.WithContext(ctx).Preload("Menus").Preload("Orders").Where("name = ?", name).First(&p)
 	return p
+}
+
+func (s *Storage) GetProductById(ctx context.Context, id uuid.UUID) string {
+	p := *new(Product)
+	s.db.WithContext(ctx).Preload("Menus").Preload("Orders").Where("id = ?", id).First(&p)
+	return p.Name
 }
 
 func (s *Storage) GetProductList(ctx context.Context) ([]*Product, error) {
 	pl := []*Product{}
-	err := s.db.WithContext(ctx).Find(&pl).Error
+	err := s.db.WithContext(ctx).Preload("Menus").Preload("Orders").Find(&pl).Error
 	return pl, err
 }
 
@@ -63,6 +69,22 @@ func (s *Storage) UpdateProduct(ctx context.Context, p *Product) error {
 
 func (s *Storage) DeleteProduct(ctx context.Context, id uuid.UUID) error {
 	return s.db.WithContext(ctx).Delete(&Product{Id: id}).Error
+}
+
+func (s *Storage) CreateOrder(ctx context.Context, o *Order) error {
+	return s.db.WithContext(ctx).Create(o).Error
+}
+
+func (s *Storage) GetOrderList(ctx context.Context) ([]*Order, error) {
+	ol := []*Order{}
+	err := s.db.WithContext(ctx).Preload("Product").Find(&ol).Error
+	return ol, err
+}
+
+func (s *Storage) GetOrdersByCustomer(ctx context.Context, customerId uuid.UUID) ([]*Order, error) {
+	or := []*Order{}
+	err := s.db.WithContext(ctx).Preload("Product").Where("customer_id = ?", customerId).Find(&or).Error
+	return or, err
 }
 
 /*func (s *Storage) GetProductTypeList(ctx context.Context) ([]*ProductType, error) {

@@ -17,6 +17,6 @@ func InitDb(cfg configdb.ConfigDb) (*gorm.DB, error) {
 	if err != nil {
 		log.Fatal("Cannot to Connect DataBase", err)
 	}
-	db.AutoMigrate(&Menu{}, &Product{}, &ProductType{}, &Order{})
+	db.AutoMigrate(&Menu{}, &Product{}, &Order{})
 	return db, err
 }
