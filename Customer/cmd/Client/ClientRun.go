@@ -36,13 +36,13 @@ Loop:
 				Address: address,
 			})
 			if err != nil {
-				log.Fatal("Не удалось создать офис")
+				log.Print("Не удалось создать офис")
 			}
 		case "2":
 			fmt.Println("Список существующих офисов:")
 			names, err := GetOfficeList(office, customer2.GetOfficeListRequest{})
 			if err != nil {
-				log.Fatal("Failed to get office list: %v", err)
+				log.Print("Failed to get office list: %v", err)
 			}
 			for _, n := range names {
 				fmt.Println(n)
@@ -58,7 +58,7 @@ Loop:
 			fmt.Print("Перед вами список существующих офисов, впишите название того, к которому вы относитесь\n")
 			names, err := GetOfficeList(office, customer2.GetOfficeListRequest{})
 			if err != nil {
-				log.Fatal("Failed to get office list: %v", err)
+				log.Print("Failed to get office list: %v", err)
 			}
 			for _, n := range names {
 				fmt.Println(n)
@@ -67,7 +67,7 @@ Loop:
 				fmt.Scan(&officeName)
 				offices, err2 := GetOfficeListModels(office, customer2.GetOfficeListRequest{})
 				if err2 != nil {
-					log.Fatal("Не удалось получить список офисов", err2)
+					log.Print("Не удалось получить список офисов", err2)
 				}
 				fmt.Print("Введенное имя:", officeName, "\n")
 				fmt.Print(len(offices), "\n")
@@ -90,7 +90,7 @@ Loop:
 				OfficeUuid: officeId,
 			})
 			if err3 != nil {
-				log.Fatal("Не удалось создать пользователя")
+				log.Print("Не удалось создать пользователя")
 			} else {
 				fmt.Println("Пользователь создан успешно")
 			}
@@ -101,7 +101,7 @@ Loop:
 			fmt.Println("Перед вами список существующих офисов, впишите название того, работников которого вы хотите посмотреть")
 			names, err := GetOfficeList(office, customer2.GetOfficeListRequest{})
 			if err != nil {
-				log.Fatal("Failed to get office list: %v", err)
+				log.Print("Failed to get office list: %v", err)
 			}
 			for _, n := range names {
 				fmt.Println(n)
@@ -110,7 +110,7 @@ Loop:
 				fmt.Scan(&officeName)
 				offices, err2 := GetOfficeListModels(office, customer2.GetOfficeListRequest{})
 				if err2 != nil {
-					log.Fatal("Не удалось получить список офисов", err2)
+					log.Print("Не удалось получить список офисов", err2)
 				}
 				for _, o := range offices {
 					if officeName == o.Name {
@@ -125,7 +125,7 @@ Loop:
 			}
 			customers, err := GetCustomerList(customer, customer2.GetUserListRequest{OfficeUuid: officeId})
 			if err != nil {
-				log.Fatal("Не получилось загрузить пользователей", err)
+				log.Print("Не получилось загрузить пользователей", err)
 			} else {
 				fmt.Println("Имена сотрудников", officeName, ":")
 			}
@@ -144,7 +144,7 @@ Loop:
 			fmt.Println("Вот актуальное меню на ", nextDay, " :")
 			actualmenu, err := GetActualMenu(order, customer2.GetActualMenuRequest{})
 			if err != nil {
-				log.Fatal("Не удалось загрузить меню", err)
+				log.Print("Не удалось загрузить меню", err)
 			}
 			for _, p := range actualmenu {
 				if p.Type == 1 {
@@ -208,7 +208,7 @@ Loop:
 			fmt.Print("Перед вами список существующих офисов, впишите название того, работников которого вы хотите посмотреть\n")
 			names, err := GetOfficeList(office, customer2.GetOfficeListRequest{})
 			if err != nil {
-				log.Fatal("Failed to get office list: %v", err)
+				log.Print("Failed to get office list: %v", err)
 			}
 			for _, n := range names {
 				fmt.Print(n + "\n")
@@ -217,7 +217,7 @@ Loop:
 				fmt.Scan(&officeName)
 				offices, err2 := GetOfficeListModels(office, customer2.GetOfficeListRequest{})
 				if err2 != nil {
-					log.Fatal("Не удалось получить список офисов", err2)
+					log.Print("Не удалось получить список офисов", err2)
 				}
 				for _, o := range offices {
 					if officeName == o.Name {
@@ -234,7 +234,7 @@ Loop:
 
 			customers, err := GetCustomerList(customer, customer2.GetUserListRequest{OfficeUuid: officeId})
 			if err != nil {
-				log.Fatal("Не получилось загрузить пользователей", err)
+				log.Print("Не получилось загрузить пользователей", err)
 			} else {
 				fmt.Print("Имена сотрудников", officeName, ":", "\n")
 			}
@@ -254,7 +254,7 @@ Loop:
 			}
 			actualmenu, err := GetActualMenu(order, customer2.GetActualMenuRequest{})
 			if err != nil {
-				log.Fatal("Не удалось загрузить меню", err)
+				log.Print("Не удалось загрузить меню", err)
 			}
 			fmt.Print("Введите название салата и его количество и нажмите кнопку 'Enter' (он должны быть в списке продуктов), который вы хотите добавить в меню, после можете вписать название еще одного салата\n", "Напишите 'выход' без ковычек, если добавили нужные салаты\n")
 
@@ -407,7 +407,7 @@ Loop:
 				Desserts:  Desserts,
 			})
 			if err2 != nil {
-				log.Fatal("Не удалось создать заказ", err2)
+				log.Print("Не удалось создать заказ, попробуйте создать заказ в другое время", err2)
 			}
 		case "7":
 			conn.Close()

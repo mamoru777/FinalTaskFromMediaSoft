@@ -216,7 +216,7 @@ func (s *Service) CreateOrder(ctx context.Context, requset *customer.CreateOrder
 	menuRes := res.Menu
 	timeOpen := menuRes.OpeningRecordAt.AsTime()
 	timeClose := menuRes.ClosingRecordAt.AsTime()
-	if currentTime.Before(timeOpen) && currentTime.After(timeClose) {
+	if currentTime.Before(timeOpen) || currentTime.After(timeClose) {
 		err := error
 		return nil, err
 	}
@@ -260,15 +260,6 @@ func (s *Service) CreateOrder(ctx context.Context, requset *customer.CreateOrder
 	for _, p := range requset.Desserts {
 		Desserts = append(Desserts, p.String())
 	}
-	/*message := &sarama.ProducerMessage{
-		Topic: "Order",
-		Value: sarama.StringEncoder(requset.UserUuid),
-	}
-	partition, offset, err := producer.SendMessage(message)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Сообщение отправлено в partiton", partition, offset)*/
 	for _, str := range Salads {
 		msg := &sarama.ProducerMessage{
 			Topic: "Order",

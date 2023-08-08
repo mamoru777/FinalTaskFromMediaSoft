@@ -317,17 +317,17 @@ func (s *Service) GetUpToDateOrderList(ctx context.Context, request *restaurant.
 
 func getProductTypeFromString(value string) restaurant.ProductType {
 	switch value {
-	case "Salad":
+	case "PRODUCT_TYPE_SALAD":
 		return 1
-	case "Garnish":
+	case "PRODUCT_TYPE_GARNISH":
 		return 2
-	case "Meat":
+	case "PRODUCT_TYPE_MEAT":
 		return 3
-	case "Soup":
+	case "PRODUCT_TYPE_SOUP":
 		return 4
-	case "Drink":
+	case "PRODUCT_TYPE_DRINK":
 		return 5
-	case "Dessert":
+	case "PRODUCT_TYPE_DESSERT":
 		return 6
 	default:
 		return 0

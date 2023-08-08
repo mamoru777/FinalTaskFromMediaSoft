@@ -104,7 +104,7 @@ Loop:
 				Price:       price,
 			})
 			if err != nil {
-				log.Fatal(err)
+				log.Print(err)
 			} else {
 				fmt.Print("Продукт создан успешно\n")
 			}
@@ -112,7 +112,7 @@ Loop:
 			fmt.Print("Список существующих продуктов:\n")
 			names, err := GetProductList(product, restaurant.GetProductListRequest{})
 			if err != nil {
-				log.Fatal("Failed to get product list: %v", err)
+				log.Print("Failed to get product list: %v", err)
 			}
 			for _, n := range names {
 				fmt.Println(n)
@@ -124,7 +124,7 @@ Loop:
 			nextDay := time.Now().AddDate(0, 0, 1)
 			nextDayProto, error := ptypes.TimestampProto(nextDay)
 			if error != nil {
-				log.Fatal(error)
+				log.Print(error)
 			}
 			var productname string
 			var salats []string
@@ -218,40 +218,40 @@ Loop:
 			Exit = false
 
 			for {
-				fmt.Print("Введите часы открытия приема заказов\n")
+				fmt.Print("Введите часы открытия приема заказов в формате hh\n")
 				_, err := fmt.Scan(&hoursOp)
 				if err != nil {
-					fmt.Print("Введите часы в числовом формате\n")
+					fmt.Print("Введите часы в числовом формате hh\n")
 				} else {
 					break
 				}
 			}
 
 			for {
-				fmt.Print("Введите минуты открытия приема заказов\n")
+				fmt.Print("Введите минуты открытия приема заказов в формате mm\n")
 				_, err := fmt.Scan(&minutesOp)
 				if err != nil {
-					fmt.Print("Введите минуты в числовом формате\n")
+					fmt.Print("Введите минуты в числовом формате mm\n")
 				} else {
 					break
 				}
 			}
 
 			for {
-				fmt.Print("Введите часы закрытия приема заказов\n")
+				fmt.Print("Введите часы закрытия приема заказов в формате hh\n")
 				_, err := fmt.Scan(&hoursCl)
 				if err != nil {
-					fmt.Print("Введите часы в числовом формате\n")
+					fmt.Print("Введите часы в числовом формате hh\n")
 				} else {
 					break
 				}
 			}
 
 			for {
-				fmt.Print("Введите минуты закрытия приема заказов\n")
+				fmt.Print("Введите минуты закрытия приема заказов в формате mm\n")
 				_, err := fmt.Scan(&minutesCl)
 				if err != nil {
-					fmt.Print("Введите минуты в числовом формате\n")
+					fmt.Print("Введите минуты в числовом формате mm\n")
 				} else {
 					break
 				}
@@ -260,13 +260,13 @@ Loop:
 			dateOpen := time.Date(year, month, day, hoursOp, minutesOp, 0, 0, loc)
 			dateOpenProto, error := ptypes.TimestampProto(dateOpen)
 			if error != nil {
-				log.Fatal(error)
+				log.Print(error)
 			}
 
 			dateClose := time.Date(year, month, day, hoursCl, minutesCl, 0, 0, loc)
 			dateCloseProto, error := ptypes.TimestampProto(dateClose)
 			if error != nil {
-				log.Fatal(error)
+				log.Print(error)
 			}
 			err := CreateMenu(menu, restaurant.CreateMenuRequest{
 				OnDate:          nextDayProto,
@@ -280,7 +280,7 @@ Loop:
 				Desserts:        desserts,
 			})
 			if err != nil {
-				log.Fatal(err)
+				log.Print(err)
 			} else {
 				fmt.Println("Меню создано успешно")
 			}
@@ -289,52 +289,56 @@ Loop:
 			nextDay := currentTime.AddDate(0, 0, 1)
 			nextDayProto, error := ptypes.TimestampProto(nextDay)
 			if error != nil {
-				log.Fatal(error)
+				log.Print(error)
 			}
 			nextDayYMD := nextDay.Format("2006-01-02")
 			fmt.Print("Меню на ", nextDayYMD, ":\n")
 			model, err := GetMenu(menu, restaurant.GetMenuRequest{OnDate: nextDayProto})
 			if err != nil {
-				log.Fatal("Faild to load Menu", err)
+				log.Print("Faild to load Menu", err)
 			}
 			fmt.Print("Id меню:", model.Uuid, "\n")
 			fmt.Print("время открытия записи:", model.OpeningRecordAt.AsTime().Format("15:01"), "\n", "время закрытия записи:", model.ClosingRecordAt.AsTime().Format("15:01"), "\n")
 			fmt.Print("Салаты:\n")
 			for _, s := range model.Salads {
-				fmt.Print(s.Name, "", s.Description, "", s.Weight, "", s.Price, "\n")
+				fmt.Print("Блюдо: ", s.Name, " Описание: ", s.Description, " Вес: ", s.Weight, " Цена: ", s.Price, "\n")
 			}
 			fmt.Print("Гарниры:\n")
 			for _, g := range model.Garnishes {
-				fmt.Print(g.Name, "", g.Description, "", g.Weight, "", g.Price, "\n")
+				fmt.Print("Блюдо: ", g.Name, " Описание: ", g.Description, " Вес: ", g.Weight, " Цена: ", g.Price, "\n")
 			}
 			fmt.Print("Мясо:\n")
 			for _, m := range model.Meats {
-				fmt.Print(m.Name, "", m.Description, "", m.Weight, "", m.Price, "\n")
+				fmt.Print("Блюдо: ", m.Name, " Описание: ", m.Description, " Вес: ", m.Weight, " Цена: ", m.Price, "\n")
 			}
 			fmt.Print("Супы:\n")
 			for _, sp := range model.Soups {
-				fmt.Print(sp.Name, "", sp.Description, "", sp.Weight, "", sp.Price, "\n")
+				fmt.Print("Блюдо: ", sp.Name, " Описание: ", sp.Description, " Вес: ", sp.Weight, " Цена: ", sp.Price, "\n")
 			}
 			fmt.Print("Напитки:\n")
 			for _, dr := range model.Drinks {
-				fmt.Print(dr.Name, "", dr.Description, "", dr.Weight, "", dr.Price, "\n")
+				fmt.Print("Блюдо: ", dr.Name, " Описание: ", dr.Description, " Вес: ", dr.Weight, " Цена: ", dr.Price, "\n")
 			}
 			fmt.Print("Дессерты:\n")
 			for _, ds := range model.Desserts {
-				fmt.Print(ds.Name, "", ds.Description, "", ds.Weight, "", ds.Price, "\n")
+				fmt.Print("Блюдо: ", ds.Name, " Описание: ", ds.Description, " Вес: ", ds.Weight, " Цена: ", ds.Price, "\n")
 			}
 		case "5":
 			fmt.Print("Список всех существующих заказов:\n")
 			orders, ordersByOffice, err := GetOrderList(order, restaurant.GetUpToDateOrderListRequest{})
 			if err != nil {
-				log.Fatal("Не удалось загрузить заказы ", err)
+				log.Print("Не удалось загрузить заказы ", err)
 			}
 			for _, o := range orders {
-				fmt.Print(o, "\n")
+				fmt.Print("Продукт: ", o.ProductName, " Количество: ", o.Count, "\n")
 			}
 			fmt.Print("Список всех заказов по офисам:\n")
 			for _, obf := range ordersByOffice {
-				fmt.Print(obf, "\n")
+				fmt.Print("Офис: ", obf.OfficeName, " Адрес: ", obf.OfficeAddress, "\n")
+				for _, r := range obf.Result {
+					fmt.Print("Продукт: ", r.ProductName, " Количество: ", r.Count, "\n")
+				}
+				fmt.Print("\n\n")
 			}
 		case "6":
 			conn.Close()
