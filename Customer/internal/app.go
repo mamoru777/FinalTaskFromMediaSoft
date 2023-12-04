@@ -5,8 +5,9 @@ import (
 	"FinalTaskFromMediaSoft/Customer/internal/configserv"
 	"FinalTaskFromMediaSoft/Customer/internal/database"
 	"FinalTaskFromMediaSoft/Customer/internal/service"
+	"FinalTaskFromMediaSoft/pkg/contracts/customer"
 	"fmt"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/customer"
+
 	"google.golang.org/grpc"
 	"log"
 	"net"

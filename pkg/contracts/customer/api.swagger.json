@@ -1,0 +1,476 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "customer_office.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "OfficeService"
+    },
+    {
+      "name": "OrderService"
+    },
+    {
+      "name": "UserService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/customer/offices": {
+      "get": {
+        "operationId": "OfficeService_GetOfficeList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerGetOfficeListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "OfficeService"
+        ]
+      },
+      "post": {
+        "operationId": "OfficeService_CreateOffice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerCreateOfficeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/customerCreateOfficeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OfficeService"
+        ]
+      }
+    },
+    "/customer/users": {
+      "get": {
+        "operationId": "UserService_GetUserList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerGetUserListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "office_uuid",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      },
+      "post": {
+        "operationId": "UserService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerCreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/customerCreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/customer/users/orders": {
+      "get": {
+        "operationId": "OrderService_GetActualMenu",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerGetActualMenuResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "OrderService"
+        ]
+      },
+      "post": {
+        "operationId": "OrderService_CreateOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/customerCreateOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/customerCreateOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "customerCreateOfficeRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": [
+            "name"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "required": [
+            "address"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "address"
+      ]
+    },
+    "customerCreateOfficeResponse": {
+      "type": "object"
+    },
+    "customerCreateOrderRequest": {
+      "type": "object",
+      "properties": {
+        "user_uuid": {
+          "type": "string",
+          "required": [
+            "user_uuid"
+          ]
+        },
+        "salads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerOrderItem"
+          }
+        },
+        "garnishes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerOrderItem"
+          }
+        },
+        "meats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerOrderItem"
+          }
+        },
+        "soups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerOrderItem"
+          }
+        },
+        "drinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerOrderItem"
+          }
+        },
+        "desserts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerOrderItem"
+          }
+        }
+      },
+      "required": [
+        "user_uuid"
+      ]
+    },
+    "customerCreateOrderResponse": {
+      "type": "object"
+    },
+    "customerCreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": [
+            "name"
+          ]
+        },
+        "office_uuid": {
+          "type": "string",
+          "required": [
+            "office_uuid"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "office_uuid"
+      ]
+    },
+    "customerCreateUserResponse": {
+      "type": "object"
+    },
+    "customerCustomerProductType": {
+      "type": "string",
+      "enum": [
+        "CUSTOMER_PRODUCT_TYPE_UNSPECIFIED",
+        "CUSTOMER_PRODUCT_TYPE_SALAD",
+        "CUSTOMER_PRODUCT_TYPE_GARNISH",
+        "CUSTOMER_PRODUCT_TYPE_MEAT",
+        "CUSTOMER_PRODUCT_TYPE_SOUP",
+        "CUSTOMER_PRODUCT_TYPE_DRINK",
+        "CUSTOMER_PRODUCT_TYPE_DESSERT"
+      ],
+      "default": "CUSTOMER_PRODUCT_TYPE_UNSPECIFIED"
+    },
+    "customerGetActualMenuResponse": {
+      "type": "object",
+      "properties": {
+        "salads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerProduct"
+          }
+        },
+        "garnishes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerProduct"
+          }
+        },
+        "meats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerProduct"
+          }
+        },
+        "soups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerProduct"
+          }
+        },
+        "drinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerProduct"
+          }
+        },
+        "desserts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerProduct"
+          }
+        }
+      }
+    },
+    "customerGetOfficeListResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerOffice"
+          }
+        }
+      }
+    },
+    "customerGetUserListResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/customerUser"
+          }
+        }
+      }
+    },
+    "customerOffice": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "customerOrderItem": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "product_uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "customerProduct": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/customerCustomerProductType"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "price": {
+          "type": "number",
+          "format": "double"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "customerUser": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "office_uuid": {
+          "type": "string"
+        },
+        "office_name": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

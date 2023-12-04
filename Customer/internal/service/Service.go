@@ -2,12 +2,13 @@ package service
 
 import (
 	"FinalTaskFromMediaSoft/Customer/internal/database"
+	"FinalTaskFromMediaSoft/pkg/contracts/customer"
+	"FinalTaskFromMediaSoft/pkg/contracts/restaurant"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/google/uuid"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/customer"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/restaurant"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

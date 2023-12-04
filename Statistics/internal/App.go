@@ -5,10 +5,11 @@ import (
 	"FinalTaskFromMediaSoft/Statistics/internal/configserv"
 	"FinalTaskFromMediaSoft/Statistics/internal/database"
 	"FinalTaskFromMediaSoft/Statistics/internal/service"
+	"FinalTaskFromMediaSoft/pkg/contracts/statistics"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/google/uuid"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/statistics"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"

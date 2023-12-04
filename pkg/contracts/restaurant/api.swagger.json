@@ -1,0 +1,476 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "restaurant_menu.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "MenuService"
+    },
+    {
+      "name": "OrderService"
+    },
+    {
+      "name": "ProductService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/restaurant/menu": {
+      "get": {
+        "operationId": "MenuService_GetMenu",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/restaurantGetMenuResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "on_date",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "MenuService"
+        ]
+      },
+      "post": {
+        "operationId": "MenuService_CreateMenu",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/restaurantCreateMenuResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/restaurantCreateMenuRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MenuService"
+        ]
+      }
+    },
+    "/restaurant/orders": {
+      "get": {
+        "operationId": "OrderService_GetUpToDateOrderList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/restaurantGetUpToDateOrderListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/restaurant/products": {
+      "get": {
+        "operationId": "ProductService_GetProductList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/restaurantGetProductListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ProductService"
+        ]
+      },
+      "post": {
+        "operationId": "ProductService_CreateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/restaurantCreateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/restaurantCreateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "restaurantCreateMenuRequest": {
+      "type": "object",
+      "properties": {
+        "on_date": {
+          "type": "string",
+          "format": "date-time",
+          "required": [
+            "on_date"
+          ]
+        },
+        "opening_record_at": {
+          "type": "string",
+          "format": "date-time",
+          "required": [
+            "opening_record_at"
+          ]
+        },
+        "closing_record_at": {
+          "type": "string",
+          "format": "date-time",
+          "required": [
+            "closing_record_at"
+          ]
+        },
+        "salads": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "garnishes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "meats": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "soups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "drinks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "desserts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "on_date",
+        "opening_record_at",
+        "closing_record_at"
+      ]
+    },
+    "restaurantCreateMenuResponse": {
+      "type": "object"
+    },
+    "restaurantCreateProductRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": [
+            "name"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "required": [
+            "description"
+          ]
+        },
+        "type": {
+          "$ref": "#/definitions/restaurantProductType"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "required": [
+            "weight"
+          ]
+        },
+        "price": {
+          "type": "number",
+          "format": "double",
+          "required": [
+            "price"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "weight",
+        "price"
+      ]
+    },
+    "restaurantCreateProductResponse": {
+      "type": "object"
+    },
+    "restaurantGetMenuResponse": {
+      "type": "object",
+      "properties": {
+        "menu": {
+          "$ref": "#/definitions/restaurantMenu"
+        }
+      }
+    },
+    "restaurantGetProductListResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantProduct"
+          }
+        }
+      }
+    },
+    "restaurantGetUpToDateOrderListResponse": {
+      "type": "object",
+      "properties": {
+        "total_orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantOrder"
+          }
+        },
+        "total_orders_by_company": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantOrdersByOffice"
+          }
+        }
+      }
+    },
+    "restaurantMenu": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "on_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "opening_record_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "closing_record_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "salads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantProduct"
+          }
+        },
+        "garnishes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantProduct"
+          }
+        },
+        "meats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantProduct"
+          }
+        },
+        "soups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantProduct"
+          }
+        },
+        "drinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantProduct"
+          }
+        },
+        "desserts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantProduct"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "restaurantOrder": {
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "string"
+        },
+        "product_name": {
+          "type": "string"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "restaurantOrdersByOffice": {
+      "type": "object",
+      "properties": {
+        "office_uuid": {
+          "type": "string"
+        },
+        "office_name": {
+          "type": "string"
+        },
+        "office_address": {
+          "type": "string"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/restaurantOrder"
+          }
+        }
+      }
+    },
+    "restaurantProduct": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/restaurantProductType"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "price": {
+          "type": "number",
+          "format": "double"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "restaurantProductType": {
+      "type": "string",
+      "enum": [
+        "PRODUCT_TYPE_UNSPECIFIED",
+        "PRODUCT_TYPE_SALAD",
+        "PRODUCT_TYPE_GARNISH",
+        "PRODUCT_TYPE_MEAT",
+        "PRODUCT_TYPE_SOUP",
+        "PRODUCT_TYPE_DRINK",
+        "PRODUCT_TYPE_DESSERT"
+      ],
+      "default": "PRODUCT_TYPE_UNSPECIFIED"
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

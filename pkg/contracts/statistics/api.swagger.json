@@ -1,0 +1,192 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "statistics_statistics.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "StatisticsService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/statistics/amount-of-profit": {
+      "get": {
+        "operationId": "StatisticsService_GetAmountOfProfit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/statisticsGetAmountOfProfitResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "StatisticsService"
+        ]
+      }
+    },
+    "/statistics/top-products": {
+      "get": {
+        "operationId": "StatisticsService_TopProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/statisticsTopProductsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "product_type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ST_PRODUCT_TYPE_UNSPECIFIED",
+              "ST_PRODUCT_TYPE_SALAD",
+              "ST_PRODUCT_TYPE_GARNISH",
+              "ST_PRODUCT_TYPE_MEAT",
+              "ST_PRODUCT_TYPE_SOUP",
+              "ST_PRODUCT_TYPE_DRINK",
+              "ST_PRODUCT_TYPE_DESSERT"
+            ],
+            "default": "ST_PRODUCT_TYPE_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "StatisticsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "statisticsGetAmountOfProfitResponse": {
+      "type": "object",
+      "properties": {
+        "profit": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "statisticsProduct": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64"
+        },
+        "product_type": {
+          "$ref": "#/definitions/statisticsStatisticsProductType"
+        }
+      }
+    },
+    "statisticsStatisticsProductType": {
+      "type": "string",
+      "enum": [
+        "ST_PRODUCT_TYPE_UNSPECIFIED",
+        "ST_PRODUCT_TYPE_SALAD",
+        "ST_PRODUCT_TYPE_GARNISH",
+        "ST_PRODUCT_TYPE_MEAT",
+        "ST_PRODUCT_TYPE_SOUP",
+        "ST_PRODUCT_TYPE_DRINK",
+        "ST_PRODUCT_TYPE_DESSERT"
+      ],
+      "default": "ST_PRODUCT_TYPE_UNSPECIFIED"
+    },
+    "statisticsTopProductsResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/statisticsProduct"
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,10 +5,11 @@ import (
 	"FinalTaskFromMediaSoft/Restourant/internal/configserv"
 	"FinalTaskFromMediaSoft/Restourant/internal/database"
 	"FinalTaskFromMediaSoft/Restourant/internal/service"
+	"FinalTaskFromMediaSoft/pkg/contracts/restaurant"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/google/uuid"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/restaurant"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"

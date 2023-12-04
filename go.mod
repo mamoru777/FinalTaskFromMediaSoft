@@ -7,7 +7,7 @@ require (
 	github.com/golang/protobuf v1.5.3
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx v3.6.2+incompatible
-	gitlab.com/mediasoft-internship/final-task/contracts v0.3.0
+
 	golang.org/x/net v0.12.0
 	google.golang.org/grpc v1.54.0
 	gorm.io/driver/postgres v1.5.2

@@ -2,8 +2,9 @@ package service
 
 import (
 	"FinalTaskFromMediaSoft/Statistics/internal/database"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/restaurant"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/statistics"
+	"FinalTaskFromMediaSoft/pkg/contracts/restaurant"
+	"FinalTaskFromMediaSoft/pkg/contracts/statistics"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

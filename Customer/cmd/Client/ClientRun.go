@@ -1,8 +1,8 @@
 package main
 
 import (
+	customer2 "FinalTaskFromMediaSoft/pkg/contracts/customer"
 	"fmt"
-	customer2 "gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/customer"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

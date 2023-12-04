@@ -1,9 +1,9 @@
 package main
 
 import (
+	statistics2 "FinalTaskFromMediaSoft/pkg/contracts/statistics"
 	"fmt"
 	"github.com/golang/protobuf/ptypes"
-	statistics2 "gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/statistics"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

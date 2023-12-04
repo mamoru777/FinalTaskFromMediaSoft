@@ -1,9 +1,10 @@
 package main
 
 import (
+	"FinalTaskFromMediaSoft/pkg/contracts/restaurant"
 	"fmt"
 	"github.com/golang/protobuf/ptypes"
-	"gitlab.com/mediasoft-internship/final-task/contracts/pkg/contracts/restaurant"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
